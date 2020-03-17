@@ -26,21 +26,20 @@ masY = [
 
 class Matrix:
 
-    def __init__(self):
-        self.sort_masY = sorted(masY, key=lambda r: sum(r['numbers']) + len(r['numbers']) - 1, reverse=True)
-        self.sort_masX = sorted(masX, key=lambda r: sum(r['numbers']) + len(r['numbers']) - 1, reverse=True)
-        self.matrix = [[0 for a in masX] for b in masY]
+    def __init__(self, values_x, values_y):
+        self.values_y = sorted(values_y, key=lambda r: sum(r['numbers']) + len(r['numbers']) - 1, reverse=True)
+        self.values_x = sorted(values_x, key=lambda r: sum(r['numbers']) + len(r['numbers']) - 1, reverse=True)
+        self.zero_matrix = [[0 for a in self.values_x] for b in self.values_y]
 
-    def print(self):
-        for im in self.matrix:
+    def print_matrix(self):
+        for im in self.zero_matrix:
             print(im)
 
-
-    def fillingIn(self):
-        for x in self.sort_masX:
-            pass
+    def filling_in(self):
+        pass
 
 
-test = Matrix()
-test.print()
-test.fillingIn()
+if __name__ == '__main__':
+    result_matrix = Matrix(masX, masY)
+    result_matrix.print_matrix()
+    result_matrix.filling_in()
