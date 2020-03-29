@@ -5,8 +5,7 @@ class ResultWindow:
     def __init__(self, matrix):
         self.matrix = matrix
         self._root = Tk()
-        self._c = Canvas(self._root, width=len(self.matrix.values_x) * 20, height=len(self.matrix.values_y) * 20,
-                         bg='white')
+        self._c = Canvas(self._root, width=len(matrix) * 20, height=len(matrix[0]) * 20, bg='white')
         self._size_rectangle = 20
 
     def draw_raw(self, raw, start_y, end_y):
@@ -24,7 +23,7 @@ class ResultWindow:
         self._c.pack()
         start_y = 0
         end_y = self._size_rectangle
-        for raw in self.matrix.zero_matrix:
+        for raw in self.matrix:
             self.draw_raw(raw, start_y, end_y)
             start_y += self._size_rectangle
             end_y += self._size_rectangle
