@@ -1,4 +1,4 @@
-from Event_handler import *
+from tkinter import *
 
 
 class MainUI(Tk):
@@ -25,7 +25,7 @@ class MainUI(Tk):
         menubar = Menu(self)
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(label="Create work window", command=self.create_second_window)
-        filemenu.add_command(label="Open saved nonogram", command=self.create_matrix_frame)
+        filemenu.add_command(label="Open saved nonogram", command=self.get_values)
         filemenu.add_command(label="Save nonogram", command=self.create_matrix_frame)
         filemenu.add_command(label="Solver nonogram", command=self.create_matrix_frame)
         filemenu.add_separator()
@@ -36,22 +36,17 @@ class MainUI(Tk):
 
         self.container = Frame(self, width=100, height=100)
         self.container.pack(fill=BOTH, expand=True)
-        self.frameslist = {}
 
     def create_matrix_frame(self):
-        for column, F in enumerate((ButtonFrame, TopInputFrame, LeftInputFrame, MatrixFrame)):
-            frame = F(self.container, self.size_rectangle, self.side_length)
-            frame.grid(row=column // 2, column=column % 2, sticky="nsew")
-            self.frameslist[F] = frame
+        self.x_value = InputFrame(self.container, self.size_rectangle, 'top')
+        self.x_value.grid(row=0, column=1, sticky="nsew")
+        self.y_value = InputFrame(self.container, self.size_rectangle, 'left')
+        self.y_value.grid(row=1, column=0, sticky="nsew")
+        MatrixFrame(self.container, self.size_rectangle, self.side_length).grid(row=1, column=1, sticky="nsew")
 
-        self.show_frame(MatrixFrame)
-        self.show_frame(LeftInputFrame)
-        self.show_frame(TopInputFrame)
-        self.show_frame(ButtonFrame)
-
-    def show_frame(self, cont):
-        frame = self.frameslist[cont]
-        frame.tkraise()
+    def get_values(self):
+        self.y_value.take_input_value()
+        self.x_value.take_input_value()
 
 
 class MatrixFrame(Frame):
@@ -70,26 +65,43 @@ class MatrixFrame(Frame):
         self.canvas.grid(row=0, column=0, sticky="ew")
 
 
-class LeftInputFrame(Frame):
+class InputFrame(Frame):
 
-    def __init__(self, parent, size_rectangle, side_length):
+    def __init__(self, parent, size_rectangle, pos):
         Frame.__init__(self, parent)
-        for row in range(size_rectangle):
-            CreateInput(self, row).create_entry_widget()
+        self.list_entry = []
+        self.entry = None
+        for numb in range(size_rectangle):
+            if pos == 'top':
+                self.list_entry.append(CreateInput(self, 2, 7, 0, numb, font="Courier 10"))
+            elif pos == 'left':
+                self.list_entry.append(CreateInput(self, 16, 1, numb, 0, font="Courier 10"))
+
+    def take_input_value(self):
+        for entry in self.list_entry:
+            entry.take_values_text()
 
 
-class TopInputFrame(Frame):
+class CreateCanvasSquare:
+    def __init__(self, master, start_x, start_y, size_square, color):
+        self.master = master
+        self.square = self.master.create_rectangle(start_x, start_y, start_x + size_square, start_y + size_square,
+                                                   fill=color)
+        self.master.tag_bind(self.square, '<Button-1>', self.move)
 
-    def __init__(self, parent, size_rectangle, side_length):
-        Frame.__init__(self, parent)
-        for row in range(size_rectangle):
-            CreateInput(self, row).create_text_widget()
+    def move(self, event):
+        self.master.itemconfig(self.square, fill='red')
 
 
-class ButtonFrame(Frame):
+class CreateInput(Text):
+    def __init__(self, master, width, height, row, column, font="Courier 10"):
+        Text.__init__(self, master, width=width, height=height, font=font)
+        self.row = row
+        self.column = column
+        self.grid(row=self.row, column=self.column)
 
-    def __init__(self, parent, size_rectangle, side_length):
-        Frame.__init__(self, parent)
+    def take_values_text(self):
+        print('{}:{} - {}'.format(self.row, self.column, self.get("1.0", END)))
 
 
 MainUIobj = MainUI()
