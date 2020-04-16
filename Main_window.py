@@ -1,5 +1,8 @@
 from tkinter import *
 
+from Conversion_matrix_to_PNG import Converter
+from Nonogram_solver import Solver
+
 
 class MainUI(Tk):
 
@@ -25,9 +28,9 @@ class MainUI(Tk):
         menubar = Menu(self)
         filemenu = Menu(menubar, tearoff=0)
         filemenu.add_command(label="Create work window", command=self.create_second_window)
-        filemenu.add_command(label="Open saved nonogram", command=self.get_values)
+        filemenu.add_command(label="Solver nonogram", command=self.get_values)
         filemenu.add_command(label="Save nonogram", command=self.create_matrix_frame)
-        filemenu.add_command(label="Solver nonogram", command=self.create_matrix_frame)
+        filemenu.add_command(label="Open saved nonogram", command=self.create_matrix_frame)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.destroy)
         menubar.add_cascade(label="File", menu=filemenu)
@@ -45,9 +48,10 @@ class MainUI(Tk):
         MatrixFrame(self.container, self.size_rectangle, self.side_length).grid(row=1, column=1, sticky="nsew")
 
     def get_values(self):
-        self.y_value.take_input_value()
-        self.x_value.take_input_value()
-
+        result_matrix = Solver(self.x_value.take_input_value(), self.y_value.take_input_value())
+        result_matrix.solve()
+        convert_matrix = Converter(result_matrix.zero_matrix)
+        convert_matrix.create_points()
 
 class MatrixFrame(Frame):
 
@@ -70,16 +74,15 @@ class InputFrame(Frame):
     def __init__(self, parent, size_rectangle, pos):
         Frame.__init__(self, parent)
         self.list_entry = []
-        self.entry = None
-        for numb in range(size_rectangle):
-            if pos == 'top':
-                self.list_entry.append(CreateInput(self, 2, 7, 0, numb, font="Courier 10"))
-            elif pos == 'left':
-                self.list_entry.append(CreateInput(self, 16, 1, numb, 0, font="Courier 10"))
+        if pos == 'top':
+            for numb in range(size_rectangle):
+                self.list_entry.append(CreateInput(self, 2, 7, 0, numb))
+        elif pos == 'left':
+            for numb in range(size_rectangle):
+                self.list_entry.append(CreateInput(self, 16, 1, numb, 0))
 
     def take_input_value(self):
-        for entry in self.list_entry:
-            entry.take_values_text()
+        return [entry.take_values_text() for entry in self.list_entry]
 
 
 class CreateCanvasSquare:
@@ -94,14 +97,14 @@ class CreateCanvasSquare:
 
 
 class CreateInput(Text):
-    def __init__(self, master, width, height, row, column, font="Courier 10"):
-        Text.__init__(self, master, width=width, height=height, font=font)
+    def __init__(self, master, width, height, row=0, column=0):
+        Text.__init__(self, master, width=width, height=height, font="Courier 10")
         self.row = row
         self.column = column
         self.grid(row=self.row, column=self.column)
 
     def take_values_text(self):
-        print('{}:{} - {}'.format(self.row, self.column, self.get("1.0", END)))
+        return [int(s) for s in self.get("1.0", END).split() if s.isdigit()]
 
 
 MainUIobj = MainUI()

@@ -1,5 +1,5 @@
 from Conversion_matrix_to_PNG import Converter
-from Work_window import ResultWindow
+
 
 masX = [
     # {'position': 'x1', 'numbers': [3, 3, 1, 3, 1, 1]},
@@ -114,14 +114,14 @@ class Solver:
         while changed:
             changed = False
             for y, row_value in enumerate(self.values_y):
-                row = self.solve_row(row_value['numbers'], self.zero_matrix[y])
+                row = self.solve_row(row_value, self.zero_matrix[y])
                 for x, cell in enumerate(row):
                     if cell and self.zero_matrix[y][x] != cell:
                         changed = True
                     self.zero_matrix[y][x] = cell
 
             for x, col_value in enumerate(self.values_x):
-                col = self.solve_row(col_value['numbers'], [row[x] for row in self.zero_matrix])
+                col = self.solve_row(col_value, [row[x] for row in self.zero_matrix])
                 for y, cell in enumerate(col):
                     if cell and self.zero_matrix[y][x] != cell:
                         changed = True
@@ -135,5 +135,5 @@ if __name__ == '__main__':
     convert_matrix = Converter(result_matrix.zero_matrix)
     convert_matrix.create_points()
 
-    work_win = ResultWindow(result_matrix.zero_matrix)
-    work_win.drawing_result_matrix()
+    # work_win = ResultWindow(result_matrix.zero_matrix)
+    # work_win.drawing_result_matrix()
