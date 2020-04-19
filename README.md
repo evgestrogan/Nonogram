@@ -4,6 +4,7 @@ In this project I'm trying to write an automated nonogram solution system
 
 upd:With this program you can solve any nonogram (if it has only one solution).
 This program will output the solution and save it.
+upd2: Also u can open your matrix with values for solution, and save your work on mid solution for in order to return to him at another time.
 
 
 I am using an existing algorithm to solve:
@@ -14,5 +15,5 @@ I am using an existing algorithm to solve:
 5. Repeat 2-4 until no more changes are possible.
 
 In future i will try create: 
-- user friendly graphical interface 
+- user friendly graphical interface (completed)
 - functions for creating your own nanograms which using your images.
